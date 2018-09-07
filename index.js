@@ -44,13 +44,13 @@ def read_xls_to_dict_list_attendence(rdbook_obj, sheetx=0, sheet_name=None, key_
  */
 
 
-function read_xls_to_dict_list_attendence(sheetx=0, sheet_name= null, key_rows=0) {
+function read_xls_to_dict_list_attendence(sheet_name= "",sheetx=0,  key_rows=0) {
 
     var rdbook_obj = XLSX.readFile('upload/深圳市铱云云计算有限公司.xlsx');
     var sheet;
-    var sheet_name;
 
     if(sheet_name) {
+        console.log(sheet_name)
         sheet = rdbook_obj.Sheets[sheet_name];
     }
     else {
@@ -60,8 +60,6 @@ function read_xls_to_dict_list_attendence(sheetx=0, sheet_name= null, key_rows=0
     }
 
     //  read header values into the list
-    //keys_common = [sheet.cell(key_rows, col_index).value for col_index in range(7)]
-
     //得到当前页内数据范围
     var range = XLSX.utils.decode_range(sheet['!ref']);
     console.log(range)
@@ -69,36 +67,48 @@ function read_xls_to_dict_list_attendence(sheetx=0, sheet_name= null, key_rows=0
     var row_start = range.s.r;
     var row_end = range.e.r;
     var col_start = range.s.c;
-    var col_end = range.e.c;
     var rows = [];
-    var result = {}
 
+    var dict_list = [];
+    var keys_common = [];
+    var dict = {}
+
+    row_start += 2;
+
+    //读取
+    for(i=col_start;i<7;i++) {
+        keys_common.push(get_cell_value(XLSX,sheet,i,row_start));
+    }
+
+    console.log(keys_common);
     //按行对 sheet 内的数据循环
     for(;row_start<=row_end;row_start++) {
-        row_data = [];
         //读取当前行里面各个列的数据
-        for(i=col_start;i<=col_end;i++) {
-            addr = XLSX.utils.encode_col(i) + XLSX.utils.encode_row(row_start);
-            console.log(addr);
-            cell = sheet[addr];
-            console.log("" + cell);
-            //如果是链接，保存为对象，其它格式直接保存原始值
-            var desired_value = (cell ? cell.v : undefined);
-            row_data.push(desired_value);
+        for(i=col_start;i<7;i++) {
+            dict[keys_common[i]] = get_cell_value(XLSX,sheet,i,row_start);
         }
-        rows.push(row_data);
+        dict['打卡时间1'] = get_cell_value(XLSX,sheet,7,row_start);
+        dict['打卡结果1'] = get_cell_value(XLSX,sheet,8,row_start);
+        dict['打卡时间2'] = get_cell_value(XLSX,sheet,9,row_start);
+        dict['打卡结果2'] = get_cell_value(XLSX,sheet,10,row_start);
+
+        dict_list.push(dict);
     }
-    //保存当前页内的数据
-    result[sheet_name] = rows;
 
-    console.log("" + rows);
-
+    console.log(dict_list);
     return rows
-
 
 }
 
-read_xls_to_dict_list_attendence()
+
+function get_cell_value(XLSX,sheet,col,row){
+    addr = XLSX.utils.encode_col(col) + XLSX.utils.encode_row(row);
+    cell = sheet[addr];
+    return (cell ? cell.v : undefined);
+
+}
+
+read_xls_to_dict_list_attendence(sheet_name="每日统计")
 
 
 
