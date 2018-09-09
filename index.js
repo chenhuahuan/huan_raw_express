@@ -46,8 +46,8 @@ def read_xls_to_dict_list_attendence(rdbook_obj, sheetx=0, sheet_name=None, key_
 
 function read_xls_to_dict_list_attendence(sheet_name= "",sheetx=0,  key_rows=0) {
 
-    var rdbook_obj = XLSX.readFile('upload/深圳市铱云云计算有限公司.xlsx');
-    var sheet;
+    let rdbook_obj = XLSX.readFile('upload/深圳市铱云云计算有限公司.xlsx');
+    let sheet;
 
     if(sheet_name) {
         console.log(sheet_name)
@@ -61,17 +61,17 @@ function read_xls_to_dict_list_attendence(sheet_name= "",sheetx=0,  key_rows=0) 
 
     //  read header values into the list
     //得到当前页内数据范围
-    var range = XLSX.utils.decode_range(sheet['!ref']);
+    let range = XLSX.utils.decode_range(sheet['!ref']);
     console.log(range)
     //保存数据范围数据
-    var row_start = range.s.r;
-    var row_end = range.e.r;
-    var col_start = range.s.c;
-    var rows = [];
+    let row_start = range.s.r;
+    let row_end = range.e.r;
+    let col_start = range.s.c;
+    let rows = [];
 
-    var dict_list = [];
-    var keys_common = [];
-    var dict = {}
+    let dict_list = [];
+    let keys_common = [];
+    let dict = {}
 
     row_start += 2;
 
